@@ -1,0 +1,13 @@
+{ "id": "pol-gaming-licensed", "flow": "gaming", "version": 1, "owner": "Product · HRV", "reviewedBy": "Risk & Compliance · Board (policy exception)",
+  "source": { "allowedAssets": ["CAD", "GBP", "EUR", "BRL", "USD"], "conversion": "NONE" },
+  "entity": { "vertical": "gaming", "excludeEntities": ["Nium Pte Ltd (MAS MPI)"] },
+  "evidence": [
+    { "id": "operator", "name": "Operator licence", "provider": "operatorLicence", "requiresAll": ["MGA"], "onFail": "DECLINE", "reasonCode": "LICENCE_REQUIRED" },
+    { "id": "kyc", "name": "Player KYC", "provider": "kyc", "onFail": "HOLD" },
+    { "id": "rg", "name": "Responsible-gaming flags", "provider": "responsibleGaming", "onFail": "DECLINE" },
+    { "id": "sof", "name": "Source of funds", "provider": "sourceOfFunds", "onFail": "HOLD" },
+    { "id": "sanctions", "name": "Sanctions", "provider": "sanctions", "onFail": "DECLINE" }
+  ],
+  "timing": { "mode": "NOW", "label": "Now · operator batch received 09:00 ET · evaluated per payout" },
+  "rail": { "allowed": ["interac", "eft_ca", "fps_uk", "sepa_inst", "pix"], "preference": "REALTIME", "beneficiaryChoice": false },
+  "pricing": { "feeBps": 85, "fxSpreadBps": 0, "reserveReleaseDays": 30, "chargeTo": "SENDER" } }

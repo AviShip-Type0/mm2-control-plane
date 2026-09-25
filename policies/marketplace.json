@@ -1,0 +1,14 @@
+{ "id": "pol-marketplace-split", "flow": "marketplace", "version": 3, "owner": "Product · Marketplaces", "reviewedBy": "Risk & Compliance",
+  "source": { "allowedAssets": ["USD", "USDC"], "conversion": "PREFUNDED" },
+  "entity": { "vertical": "marketplace" },
+  "evidence": [
+    { "id": "kyb", "name": "Seller KYB", "provider": "kyb", "onFail": "HOLD" },
+    { "id": "lineage", "name": "Travel Rule lineage", "provider": "lineage", "onFail": "DECLINE" },
+    { "id": "sanctions", "name": "Sanctions", "provider": "sanctions", "onFail": "DECLINE" },
+    { "id": "verify", "name": "Verify", "provider": "verify", "onFail": "HOLD" }
+  ],
+  "timing": { "options": [
+    { "id": "T0", "mode": "EVENT", "eventField": "context.facts.orderSettled", "eventName": "order settlement" },
+    { "id": "WEEKLY", "mode": "NET", "windowHours": 168, "label": "Weekly net" } ] },
+  "rail": { "allowed": ["pix", "ted", "usdc_polygon", "card_load"], "preference": "REALTIME", "beneficiaryChoice": true },
+  "pricing": { "fxSpreadBps": 45, "onchainBps": 10, "chargeTo": "BENEFICIARY" } }

@@ -1,0 +1,15 @@
+{ "id": "pol-stablecoin-contractor", "flow": "stablecoin", "version": 2, "owner": "Product · Digital Assets", "reviewedBy": "Risk & Compliance",
+  "source": { "allowedAssets": ["USDC", "USD"], "conversion": "JIT" },
+  "entity": { "vertical": "payroll" },
+  "evidence": [
+    { "id": "kyc", "name": "Beneficiary KYC", "provider": "kyc", "onFail": "HOLD" },
+    { "id": "verify", "name": "Verify", "provider": "verify", "onFail": "HOLD" },
+    { "id": "purpose", "name": "Purpose code", "provider": "purpose", "onFail": "DECLINE" },
+    { "id": "sof", "name": "Source of funds", "provider": "sourceOfFunds", "onFail": "HOLD" },
+    { "id": "sanctions", "name": "Sanctions", "provider": "sanctions", "onFail": "DECLINE" }
+  ],
+  "timing": { "options": [
+    { "id": "JIT", "mode": "JIT", "label": "Just-in-time: convert at payout, not at funding · treasury stays in USDC until the second it is needed" },
+    { "id": "NOW", "mode": "NOW", "label": "Now: from pre-funded balance (3 float days on this corridor)" } ] },
+  "rail": { "allowed": ["instapay", "pesonet", "gcash", "usdc_base"], "preference": "REALTIME", "beneficiaryChoice": true },
+  "pricing": { "fxSpreadBps": 35, "conversionBps": 10, "onchainBps": 10, "chargeTo": "BENEFICIARY" } }

@@ -1,0 +1,144 @@
+{
+  "id": "marketplace",
+  "tag": "Marketplace",
+  "name": "Marketplace split \u2192 Brazil",
+  "sub": "US marketplace settles an order and pays a seller in S\u00e3o Paulo.",
+  "intent": {
+    "id": "po-mkt-4471",
+    "flow": "marketplace",
+    "amount": {
+      "value": 1000,
+      "ccy": "USD"
+    },
+    "source": {
+      "asset": "USD",
+      "account": "Platform \u00b7 Receivables (USD)",
+      "description": "USD 1,000.00 collected by the platform's PSP (Stripe) \u2192 swept to Nium virtual account \u2192 Platform \u00b7 Receivables"
+    },
+    "beneficiary": {
+      "id": "seller-88213",
+      "name": "Seller (CNPJ)",
+      "country": "BR",
+      "jurisdiction": "BR",
+      "currency": "BRL",
+      "payoutChoice": "local"
+    },
+    "context": {
+      "split": {
+        "feeBps": 1200,
+        "feesAccount": "Platform \u00b7 Fees (USD)",
+        "sellerAccount": "Seller \u00b7 MCY account (USD)"
+      },
+      "timingOption": "T0",
+      "facts": {
+        "kyb": "verified",
+        "kybDetail": "CNPJ verified under Nium Brasil licence",
+        "lineage": "PSP \u2192 Platform \u2192 Seller attached, split #4471",
+        "verifyDetail": "Pix key (CNPJ) resolves to seller",
+        "orderSettled": true
+      },
+      "narratives": {
+        "APPROVED": "Split, evidence and route recorded as one trace; the seller sees the order, the fee and the payout on one statement.",
+        "KYB_PENDING": "Seller KYB pending \u2014 funds stay in the seller's multi-currency account, visible to the seller, not payable. Auto-releases when the CNPJ check clears; escalates to RFI at 72h.",
+        "NETTING_QUEUED": "Queued with this seller's other splits; one Pix payout on Friday 09:00 BRT.",
+        "JURISDICTION_OUT_OF_APPETITE": "Brazil bans stablecoin settlement of cross-border payments for licensed providers from 1 Oct 2026 (BCB Resolution 561). The digital-asset pairing excludes Brazilian beneficiaries by policy; the seller is offered Pix or a Nium card instead. Regulation as a routing input, not a memo."
+      }
+    }
+  },
+  "knobs": [
+    {
+      "id": "payee",
+      "label": "Seller payout choice",
+      "options": [
+        {
+          "label": "Pix (BRL)",
+          "patch": {
+            "beneficiary": {
+              "payoutChoice": "local"
+            }
+          }
+        },
+        {
+          "label": "USDC wallet (Polygon) \u2014 Res. 561 test",
+          "patch": {
+            "beneficiary": {
+              "payoutChoice": "usdc"
+            },
+            "context": {
+              "facts": {
+                "verifyDetail": "wallet ownership confirmed"
+              }
+            }
+          }
+        },
+        {
+          "label": "Nium card balance",
+          "patch": {
+            "beneficiary": {
+              "payoutChoice": "card"
+            },
+            "context": {
+              "facts": {
+                "verifyDetail": "card ownership confirmed"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "timing",
+      "label": "Timing",
+      "options": [
+        {
+          "label": "On settlement (T+0)",
+          "patch": {
+            "context": {
+              "timingOption": "T0"
+            }
+          }
+        },
+        {
+          "label": "Weekly net (Fridays)",
+          "patch": {
+            "context": {
+              "timingOption": "WEEKLY",
+              "netting": {
+                "receipts": 4,
+                "windowHours": 168,
+                "closeNow": false,
+                "openedAt": "2026-09-21T00:00:00Z"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "kyb",
+      "label": "Seller KYB",
+      "options": [
+        {
+          "label": "Verified \u2014 Nium-run (CNPJ)",
+          "patch": {
+            "context": {
+              "facts": {
+                "kyb": "verified"
+              }
+            }
+          }
+        },
+        {
+          "label": "Pending",
+          "patch": {
+            "context": {
+              "facts": {
+                "kyb": "pending"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

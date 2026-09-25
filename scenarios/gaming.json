@@ -1,0 +1,17 @@
+{ "id": "gaming", "tag": "High-risk verticals", "name": "Licensed gaming payout → Ontario", "sub": "An MGA-licensed operator pays a player in Toronto; the router picks the partner.",
+  "intent": {
+    "id": "po-gaming-5150", "flow": "gaming", "amount": { "value": 2150, "ccy": "CAD" },
+    "source": { "asset": "CAD", "account": "Operator balance (CAD)", "description": "operator payout file · player winnings from the operator's pre-funded CAD balance (Nium virtual account)" },
+    "beneficiary": { "id": "player-on-1", "name": "Player, Toronto", "country": "CA", "jurisdiction": "CA-ON", "currency": "CAD", "payoutChoice": "local" },
+    "context": { "facts": { "operatorLicences": ["MGA", "iGO"], "kyc": "verified", "sourceOfFunds": "operator payout file reconciles" },
+      "narratives": { "APPROVED": "Two partners were skipped without ever seeing the flow. Eighty-five basis points where the operator pays 3% today — and a rolling reserve that makes the partner whole if the operator doesn't.", "JURISDICTION_OUT_OF_APPETITE": "No partner carries private-operator gaming payouts to this province. Nothing touched the core network.", "MARKET_REGISTRATION_REQUIRED": "Ontario payouts require the operator to be registered with iGaming Ontario.", "TICKET_ABOVE_MAX": "Partner C accepts the operator and the province but caps tickets at CAD 25,000. The policy holds the payout, opens an enhanced-due-diligence case with the operator's source-of-funds pack, and offers a split into two payouts on consecutive days." } } },
+  "knobs": [
+    { "id": "lic", "label": "Operator licence", "options": [
+      { "label": "MGA + registered with iGaming Ontario", "patch": { "context": { "facts": { "operatorLicences": ["MGA", "iGO"] } } } },
+      { "label": "MGA only — not registered in Ontario", "patch": { "context": { "facts": { "operatorLicences": ["MGA"] } } } } ] },
+    { "id": "prov", "label": "Beneficiary province", "options": [
+      { "label": "Ontario", "patch": { "beneficiary": { "jurisdiction": "CA-ON" } } },
+      { "label": "Quebec", "patch": { "beneficiary": { "jurisdiction": "CA-QC" } } } ] },
+    { "id": "ticket", "label": "Ticket", "options": [
+      { "label": "CAD 2,150", "patch": { "amount": { "value": 2150 } } },
+      { "label": "CAD 40,000", "patch": { "amount": { "value": 40000 } } } ] } ] }

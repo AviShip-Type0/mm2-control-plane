@@ -1,0 +1,19 @@
+{ "id": "prediction", "tag": "Prediction markets", "name": "Resolution payout → Mexico", "sub": "A market resolves; the winner in Guadalajara gets paid in pesos.",
+  "intent": {
+    "id": "po-pm-88213", "flow": "prediction", "amount": { "value": 640, "ccy": "USDC" },
+    "source": { "asset": "USDC", "account": "Venue payout wallet (USD)", "custodian": "Coinbase", "description": "market #88213 resolved YES · position value USD 640.00 · pUSD unwrapped → USDC (Polygon)" },
+    "beneficiary": { "id": "winner-gdl-3", "name": "Winner, Guadalajara", "country": "MX", "jurisdiction": "MX", "currency": "MXN", "payoutChoice": "local" },
+    "context": { "facts": { "venueLicences": ["CFTC_DCM"], "resolution": "venue attestation 0x7c…e41 · resolved YES", "verifyDetail": "beneficiary name matches Verify result", "sourceOfFunds": "venue attestation of resolved position", "velocityDetail": "first withdrawal > USD 500 · EDD-lite passed automatically" },
+      "narratives": { "APPROVED": "Resolution to local fiat in one hop, with the venue's licence, the beneficiary's jurisdiction and the KYC match all in the trace — the audit a bank partner asks for, produced by default.", "VENUE_LICENCE_REQUIRED": "Venue is unlicensed in the beneficiary's market. The router found no partner pairing with appetite for unlicensed event contracts.", "JURISDICTION_OUT_OF_APPETITE": "No partner pairing has appetite for this jurisdiction while state litigation is live (or a betting licence is required). Funds remain in the venue wallet." } } },
+  "knobs": [
+    { "id": "juris", "label": "Beneficiary jurisdiction", "options": [
+      { "label": "Mexico", "patch": { "beneficiary": { "country": "MX", "jurisdiction": "MX", "currency": "MXN" } } },
+      { "label": "United States — Arizona", "patch": { "beneficiary": { "country": "US", "jurisdiction": "US-AZ", "currency": "USD" } } },
+      { "label": "United States — New Jersey", "patch": { "beneficiary": { "country": "US", "jurisdiction": "US-NJ", "currency": "USD" } } },
+      { "label": "United Kingdom", "patch": { "beneficiary": { "country": "GB", "jurisdiction": "GB", "currency": "GBP" } } } ] },
+    { "id": "venue", "label": "Venue status", "options": [
+      { "label": "CFTC-registered DCM", "patch": { "context": { "facts": { "venueLicences": ["CFTC_DCM"] } } } },
+      { "label": "Offshore, unlicensed in beneficiary market", "patch": { "context": { "facts": { "venueLicences": ["NONE"] } } } } ] },
+    { "id": "payee", "label": "Payout", "options": [
+      { "label": "Local fiat (SPEI / RTP)", "patch": { "beneficiary": { "payoutChoice": "local" } } },
+      { "label": "USDC wallet (Polygon)", "patch": { "beneficiary": { "payoutChoice": "usdc" } } } ] } ] }

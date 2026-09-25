@@ -1,0 +1,330 @@
+[
+  {
+    "id": "NIUM_INC_CFSB",
+    "name": "Partner A \u2014 Nium Inc + CFSB (core US network)",
+    "entity": "Nium Inc (33 state MTLs)",
+    "core": true,
+    "verticals": [
+      "payroll",
+      "marketplace",
+      "treasury",
+      "fintech",
+      "creator"
+    ],
+    "jurisdictions": [
+      "US"
+    ],
+    "rails": [
+      "rtp_us",
+      "ach_us",
+      "card_load"
+    ],
+    "maxTicketUsd": 5000000,
+    "feeBps": 0,
+    "reserveBps": 0,
+    "short": "Partner A (US core)"
+  },
+  {
+    "id": "NIUM_BR_BS2",
+    "name": "Nium Institui\u00e7\u00e3o de Pagamento + Banco BS2 (Pix)",
+    "entity": "Nium IP Ltda (Banco Central do Brasil)",
+    "verticals": [
+      "marketplace",
+      "payroll",
+      "fintech",
+      "creator",
+      "gaming"
+    ],
+    "jurisdictions": [
+      "BR"
+    ],
+    "rails": [
+      "pix",
+      "ted"
+    ],
+    "maxTicketUsd": 2000000,
+    "feeBps": 0,
+    "reserveBps": 0,
+    "requires": {
+      "BR": {
+        "gaming": [
+          "SPA_BR"
+        ]
+      }
+    },
+    "note": "Brazil: betting payouts Pix/TED only (Law 14.790); stablecoin settlement banned for eFX from 1 Oct 2026 (Res. 561)",
+    "short": "Nium Brasil + BS2"
+  },
+  {
+    "id": "NIUM_SG_COINBASE",
+    "name": "Nium Singapore + Coinbase / Circle (digital-asset pairing)",
+    "entity": "Nium Pte Ltd (MAS MPI)",
+    "verticals": [
+      "marketplace",
+      "payroll",
+      "treasury",
+      "creator",
+      "prediction_markets",
+      "perps",
+      "agent_settlement",
+      "crypto"
+    ],
+    "jurisdictions": [
+      "*"
+    ],
+    "exclude": [
+      "US-AZ",
+      "US-NV",
+      "US-WA",
+      "US-MA",
+      "US-MI",
+      "US-MN",
+      "GB",
+      "SG",
+      "AU",
+      "IN",
+      "BR",
+      "AE",
+      "ID"
+    ],
+    "rails": [
+      "usdc_polygon",
+      "usdc_base"
+    ],
+    "maxTicketUsd": 1000000,
+    "feeBps": 0,
+    "reserveBps": 0,
+    "short": "Nium SG + Coinbase/Circle"
+  },
+  {
+    "id": "NIUM_ISSUER",
+    "name": "Nium card programme (principal member; Thredd)",
+    "entity": "Nium issuing entities (Visa / Mastercard principal)",
+    "verticals": [
+      "marketplace",
+      "creator",
+      "payroll",
+      "treasury"
+    ],
+    "jurisdictions": [
+      "*"
+    ],
+    "rails": [
+      "card_load"
+    ],
+    "maxTicketUsd": 50000,
+    "feeBps": 0,
+    "reserveBps": 0,
+    "short": "Nium card programme"
+  },
+  {
+    "id": "NIUM_SG_NETBANK",
+    "name": "Nium Singapore + BSP-licensed partner (Philippines)",
+    "entity": "Nium Pte Ltd (MAS MPI)",
+    "verticals": [
+      "payroll",
+      "marketplace",
+      "creator",
+      "treasury"
+    ],
+    "jurisdictions": [
+      "PH"
+    ],
+    "rails": [
+      "instapay",
+      "pesonet",
+      "gcash"
+    ],
+    "maxTicketUsd": 500000,
+    "feeBps": 0,
+    "reserveBps": 0,
+    "short": "Nium SG + PH partner"
+  },
+  {
+    "id": "NIUM_MX_COBRE",
+    "name": "Partner C \u2014 LatAm HRV appetite (Nium + Cobre, Mexico/Colombia)",
+    "entity": "Nium Pte Ltd (MAS MPI) \u2192 Cobre MX/CO",
+    "verticals": [
+      "prediction_markets",
+      "marketplace",
+      "payroll",
+      "creator"
+    ],
+    "jurisdictions": [
+      "MX",
+      "CO"
+    ],
+    "rails": [
+      "spei"
+    ],
+    "maxTicketUsd": 100000,
+    "feeBps": 0,
+    "reserveBps": 0,
+    "short": "Partner C (LatAm HRV)"
+  },
+  {
+    "id": "NIUM_INC_CRB",
+    "name": "Partner D \u2014 Nium Inc + Cross River (US digital-asset & DCM appetite)",
+    "entity": "Nium Inc (33 state MTLs)",
+    "verticals": [
+      "prediction_markets",
+      "perps",
+      "crypto"
+    ],
+    "jurisdictions": [
+      "US-NJ",
+      "US-NY",
+      "US-CA",
+      "US-TX",
+      "US-FL",
+      "US-IL",
+      "US-PA",
+      "US-OH",
+      "US-DE"
+    ],
+    "rails": [
+      "rtp_us",
+      "ach_us"
+    ],
+    "maxTicketUsd": 250000,
+    "feeBps": 0,
+    "reserveBps": 0,
+    "note": "3rd-Circuit-aligned states only while the 3rd/9th Circuit split is unresolved",
+    "short": "Partner D (US DCM)"
+  },
+  {
+    "id": "NIUM_UK_CLEARBANK",
+    "name": "Partner E \u2014 Nium UK + partner bank (regulated derivatives venues)",
+    "entity": "Nium Fintech Ltd (FCA AEMI 901024)",
+    "verticals": [
+      "perps",
+      "crypto"
+    ],
+    "jurisdictions": [
+      "GB",
+      "EU"
+    ],
+    "rails": [
+      "fps_uk",
+      "chaps",
+      "sepa_inst",
+      "usdc_base"
+    ],
+    "maxTicketUsd": 250000,
+    "feeBps": 0,
+    "reserveBps": 0,
+    "short": "Partner E (UK venues)"
+  },
+  {
+    "id": "NIUM_UK_GAMING",
+    "name": "Nium UK + partner bank (UKGC operators)",
+    "entity": "Nium Fintech Ltd (FCA AEMI 901024)",
+    "verticals": [
+      "gaming",
+      "prediction_markets"
+    ],
+    "jurisdictions": [
+      "GB"
+    ],
+    "rails": [
+      "fps_uk",
+      "chaps"
+    ],
+    "requires": {
+      "GB": [
+        "UKGC"
+      ]
+    },
+    "maxTicketUsd": 50000,
+    "feeBps": 0,
+    "reserveBps": 300,
+    "reserveReleaseDays": 30,
+    "short": "Nium UK gaming"
+  },
+  {
+    "id": "NIUM_EU_BC_GAMING",
+    "name": "Partner B \u2014 Nium EU + Banking Circle (licensed gaming, UK/MT)",
+    "entity": "UAB Nium EU (Lithuania EMI no. 14)",
+    "verticals": [
+      "gaming"
+    ],
+    "jurisdictions": [
+      "GB",
+      "MT"
+    ],
+    "rails": [
+      "fps_uk",
+      "sepa_inst"
+    ],
+    "requires": {
+      "GB": [
+        "UKGC"
+      ],
+      "MT": [
+        "MGA"
+      ]
+    },
+    "maxTicketUsd": 50000,
+    "feeBps": 0,
+    "reserveBps": 300,
+    "reserveReleaseDays": 30,
+    "short": "Partner B (EU gaming)"
+  },
+  {
+    "id": "NIUM_CA_PATENO_GAMING",
+    "name": "Partner C \u2014 Nium Canada + Pateno (licensed gaming, CA-ON / UK / MT)",
+    "entity": "Nium Canada Corp (FINTRAC MSB M15669293)",
+    "verticals": [
+      "gaming"
+    ],
+    "jurisdictions": [
+      "CA-ON",
+      "GB",
+      "MT"
+    ],
+    "rails": [
+      "interac",
+      "eft_ca",
+      "fps_uk",
+      "sepa_inst"
+    ],
+    "requires": {
+      "CA-ON": [
+        "iGO"
+      ],
+      "GB": [
+        "UKGC"
+      ],
+      "MT": [
+        "MGA"
+      ]
+    },
+    "maxTicketUsd": 18400,
+    "feeBps": 0,
+    "reserveBps": 500,
+    "reserveReleaseDays": 30,
+    "short": "Partner C (CA-ON gaming)"
+  },
+  {
+    "id": "NIUM_SG_INDIA",
+    "name": "Nium Singapore \u2192 Nium India / AD-I partner bank",
+    "entity": "Nium Pte Ltd (MAS MPI) \u2192 Nium India Pvt Ltd",
+    "verticals": [
+      "agent_settlement",
+      "payroll",
+      "marketplace",
+      "creator"
+    ],
+    "jurisdictions": [
+      "IN"
+    ],
+    "rails": [
+      "upi",
+      "neft"
+    ],
+    "maxTicketUsd": 250000,
+    "feeBps": 0,
+    "reserveBps": 0,
+    "short": "Nium SG \u2192 India"
+  }
+]

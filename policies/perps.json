@@ -1,0 +1,15 @@
+{ "id": "pol-perps-margin", "flow": "perps", "version": 1, "owner": "Product · Digital Assets", "reviewedBy": "Risk & Compliance",
+  "source": { "allowedAssets": ["USDC", "GBP", "EUR", "USD"], "conversion": "JIT" },
+  "entity": { "vertical": "perps" },
+  "evidence": [
+    { "id": "venue", "name": "Venue status", "provider": "venueLicence", "accepts": ["CFTC_DCM", "CFTC_FCM", "FCA", "MICA_CASP"], "onFail": "DECLINE", "reasonCode": "VENUE_OUT_OF_APPETITE" },
+    { "id": "kyc", "name": "Trader KYC", "provider": "kyc", "onFail": "HOLD" },
+    { "id": "sof", "name": "Source of funds", "provider": "sourceOfFunds", "onFail": "HOLD" },
+    { "id": "attest", "name": "Venue attestation of realised PnL", "provider": "attestation", "onFail": "HOLD", "when": { "field": "context.direction", "equals": "withdrawal" } },
+    { "id": "edd", "name": "EDD threshold", "provider": "velocity", "onFail": "HOLD" },
+    { "id": "sanctions", "name": "Sanctions", "provider": "sanctions", "onFail": "DECLINE" },
+    { "id": "sla", "name": "Margin-time SLA", "provider": "sla", "onFail": "WARN" }
+  ],
+  "timing": { "mode": "NOW", "label": "Immediate · margin-time SLA (weekend and overnight windows priced in)" },
+  "rail": { "allowed": ["fps_uk", "chaps", "sepa_inst", "usdc_base"], "preference": "REALTIME", "beneficiaryChoice": true },
+  "pricing": { "fxSpreadBps": 30, "conversionBps": 10, "onchainBps": 10, "chargeTo": "BENEFICIARY" } }

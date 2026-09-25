@@ -1,0 +1,20 @@
+{ "id": "agent", "tag": "x402 & agents", "name": "x402 agent settlement → India", "sub": "An AI agent pays a Bangalore data vendor per call; Nium nets and lands rupees.",
+  "intent": {
+    "id": "po-agent-7f2a", "flow": "agent", "amount": { "value": 82.4, "ccy": "USDC" },
+    "source": { "asset": "USDC", "account": "Principal wallet (USD)", "custodian": "Facilitator escrow (Coinbase custody)", "description": "agent research-agent-7f2a paid 4,120 × USD 0.02 via x402 (USDC on Base, EIP-3009 authorisations)", "note": "Beneficiary: data vendor, Bangalore · purpose: business services · e-FIRA issued on inward remittance" },
+    "beneficiary": { "id": "vendor-blr-9", "name": "Data vendor, Bangalore", "country": "IN", "jurisdiction": "IN", "currency": "INR", "payoutChoice": "local" },
+    "context": { "timingOption": "24H", "netting": { "receipts": 4120, "windowHours": 24, "closeNow": true },
+      "agent": { "id": "research-agent-7f2a", "principalVerified": true, "principal": "US analytics company (KYB)", "reputation": 0.92, "dailyCapUsd": 500, "spentTodayUsd": 0 },
+      "facts": { "kyc": "verified", "purpose": "business services · inward remittance documentation auto-generated" },
+      "narratives": { "APPROVED": "Four thousand on-chain receipts, one rupee payout, FX at the net. The agent economy needs a last mile that thinks in windows, not ticks.", "AGENT_PRINCIPAL_UNVERIFIED": "The agent has no verified principal. This is the gap TRM Labs describes — 0.6–7.5% of x402 value is agentic and none of it is registered. USDC stays in the facilitator escrow for the agent to reclaim.", "MANDATE_EXCEEDED": "Aggregate spend exceeds the principal's mandate for today. The principal is notified; the excess is refundable on-chain.", "UNECONOMIC_ROUTE": "Per-call payouts cost more in rail fees than the value moved. The policy refuses to pay more to move money than the money is worth and falls back to the 24h window. This is why streaming needs netting." } } },
+  "knobs": [
+    { "id": "net", "label": "Netting window", "options": [
+      { "label": "24 hours (4,120 calls → 1 payout)", "patch": { "context": { "timingOption": "24H", "netting": { "receipts": 4120, "windowHours": 24, "closeNow": true, "mode": "WINDOW" } } } },
+      { "label": "At USD 50 threshold", "patch": { "context": { "timingOption": "THRESHOLD", "netting": { "receipts": 4120, "windowHours": 24, "thresholdUsd": 50, "closeNow": true, "mode": "WINDOW" } } } },
+      { "label": "Per call — no netting", "patch": { "context": { "timingOption": "PER_ITEM", "netting": { "receipts": 4120, "windowHours": 24, "closeNow": true, "mode": "PER_ITEM" } } } } ] },
+    { "id": "mandate", "label": "Agent mandate (AP2-style)", "options": [
+      { "label": "Cap USD 500 / day", "patch": { "context": { "agent": { "dailyCapUsd": 500 } } } },
+      { "label": "Cap USD 50 / day", "patch": { "context": { "agent": { "dailyCapUsd": 50 } } } } ] },
+    { "id": "principal", "label": "Agent principal", "options": [
+      { "label": "Verified — US analytics company (KYB)", "patch": { "context": { "agent": { "principalVerified": true } } } },
+      { "label": "Unregistered agent", "patch": { "context": { "agent": { "principalVerified": false } } } } ] } ] }

@@ -1,0 +1,16 @@
+{ "id": "pol-agent-settlement", "flow": "agent", "version": 1, "owner": "Product · Platforms", "reviewedBy": "Risk & Compliance",
+  "source": { "allowedAssets": ["USDC"], "conversion": "JIT" },
+  "entity": { "vertical": "agent_settlement" },
+  "evidence": [
+    { "id": "kya", "name": "Know-Your-Agent", "provider": "agentPrincipal", "onFail": "DECLINE" },
+    { "id": "mandate", "name": "Mandate", "provider": "mandate", "onFail": "DECLINE" },
+    { "id": "kyc", "name": "Beneficiary KYC", "provider": "kyc", "onFail": "HOLD" },
+    { "id": "purpose", "name": "Purpose", "provider": "purpose", "onFail": "DECLINE" },
+    { "id": "sanctions", "name": "Sanctions", "provider": "sanctions", "onFail": "DECLINE" }
+  ],
+  "timing": { "fallback": "24-hour netting window", "options": [
+    { "id": "24H", "mode": "NET", "windowHours": 24 },
+    { "id": "THRESHOLD", "mode": "NET", "threshold": 50, "windowHours": 24 },
+    { "id": "PER_ITEM", "mode": "NET", "perItem": true } ] },
+  "rail": { "allowed": ["upi", "neft"], "preference": "REALTIME", "beneficiaryChoice": false },
+  "pricing": { "fxSpreadBps": 35, "conversionBps": 0, "chargeTo": "BENEFICIARY" } }

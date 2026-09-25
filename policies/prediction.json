@@ -1,0 +1,14 @@
+{ "id": "pol-prediction-resolution", "flow": "prediction", "version": 1, "owner": "Product · Americas", "reviewedBy": "Risk & Compliance · Legal",
+  "source": { "allowedAssets": ["USDC"], "conversion": "JIT" },
+  "entity": { "vertical": "prediction_markets", "excludeEntities": ["Nium Pte Ltd (MAS MPI) — SG beneficiaries"] },
+  "evidence": [
+    { "id": "venue", "name": "Venue licence", "provider": "venueLicence", "accepts": ["CFTC_DCM"], "onFail": "DECLINE", "reasonCode": "VENUE_LICENCE_REQUIRED" },
+    { "id": "resolution", "name": "Market resolution", "provider": "resolution", "onFail": "HOLD" },
+    { "id": "verify", "name": "KYC ↔ account match", "provider": "verify", "onFail": "HOLD" },
+    { "id": "sof", "name": "Source of funds", "provider": "sourceOfFunds", "onFail": "HOLD" },
+    { "id": "velocity", "name": "Velocity", "provider": "velocity", "onFail": "HOLD" },
+    { "id": "sanctions", "name": "Sanctions", "provider": "sanctions", "onFail": "DECLINE" }
+  ],
+  "timing": { "mode": "EVENT", "eventField": "context.facts.resolution", "eventName": "resolution signal" },
+  "rail": { "allowed": ["spei", "rtp_us", "ach_us", "usdc_polygon"], "preference": "REALTIME", "beneficiaryChoice": true },
+  "pricing": { "fxSpreadBps": 40, "conversionBps": 10, "onchainBps": 0, "chargeTo": "BENEFICIARY" } }

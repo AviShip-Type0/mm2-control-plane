@@ -1,0 +1,152 @@
+{
+  "id": "usdc",
+  "tag": "Stablecoin",
+  "name": "USDC-funded payout \u2192 Philippines",
+  "sub": "A software company pays a contractor in Cebu from its USDC treasury.",
+  "intent": {
+    "id": "po-usdc-2201",
+    "flow": "stablecoin",
+    "amount": {
+      "value": 800,
+      "ccy": "USDC"
+    },
+    "source": {
+      "asset": "USDC",
+      "account": "Client wallet (USD)",
+      "custodian": "Coinbase",
+      "description": "USDC 800.00 from whitelisted client treasury wallet (Base)",
+      "note": "No pre-funding: capital left the client's treasury 40 seconds before it landed."
+    },
+    "beneficiary": {
+      "id": "contractor-cebu-17",
+      "name": "Contractor, Cebu",
+      "country": "PH",
+      "jurisdiction": "PH",
+      "currency": "PHP",
+      "payoutChoice": "local"
+    },
+    "context": {
+      "timingOption": "JIT",
+      "facts": {
+        "kyc": "verified",
+        "verifyDetail": "account name matches KYC",
+        "purpose": "services \u2014 contractor",
+        "sourceOfFunds": "USDC from whitelisted wallet, Coinbase custody"
+      },
+      "narratives": {
+        "APPROVED": "Stablecoin as settlement value, not payments value: the contractor never sees a token; the client never pre-funds a corridor."
+      }
+    }
+  },
+  "knobs": [
+    {
+      "id": "fund",
+      "label": "Funding",
+      "options": [
+        {
+          "label": "USDC on Base \u2014 just-in-time via Coinbase",
+          "patch": {
+            "amount": {
+              "ccy": "USDC"
+            },
+            "source": {
+              "asset": "USDC",
+              "description": "USDC 800.00 from whitelisted client treasury wallet (Base)",
+              "note": "No pre-funding: capital left the client's treasury 40 seconds before it landed."
+            },
+            "context": {
+              "timingOption": "JIT",
+              "facts": {
+                "sourceOfFunds": "USDC from whitelisted wallet, Coinbase custody"
+              }
+            }
+          }
+        },
+        {
+          "label": "Pre-funded USD balance",
+          "patch": {
+            "amount": {
+              "ccy": "USD"
+            },
+            "source": {
+              "asset": "USD",
+              "description": "USD 800.00 from pre-funded client balance (funded T-3 by wire)",
+              "note": "Pre-funding cost: 3 float days on this corridor."
+            },
+            "context": {
+              "timingOption": "NOW",
+              "facts": {
+                "sourceOfFunds": "client balance"
+              },
+              "narratives": {
+                "APPROVED": "Works \u2014 but the client paid three float days for it. Switch funding to USDC to see the difference."
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "payee",
+      "label": "Contractor payout choice",
+      "options": [
+        {
+          "label": "InstaPay / PESONet (PHP)",
+          "patch": {
+            "beneficiary": {
+              "payoutChoice": "local"
+            }
+          }
+        },
+        {
+          "label": "GCash wallet (PHP)",
+          "patch": {
+            "beneficiary": {
+              "payoutChoice": "local",
+              "preferWallet": true
+            }
+          }
+        },
+        {
+          "label": "USDC wallet (Base)",
+          "patch": {
+            "beneficiary": {
+              "payoutChoice": "usdc"
+            },
+            "context": {
+              "facts": {
+                "verifyDetail": "wallet ownership confirmed"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "purpose",
+      "label": "Purpose",
+      "options": [
+        {
+          "label": "Contractor services",
+          "patch": {
+            "context": {
+              "facts": {
+                "purpose": "services \u2014 contractor"
+              }
+            }
+          }
+        },
+        {
+          "label": "Salary",
+          "patch": {
+            "context": {
+              "facts": {
+                "purpose": "SAL \u2014 salary (client attests employment)"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

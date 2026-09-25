@@ -1,0 +1,144 @@
+openapi: 3.0.3
+info:
+  title: Money Movement 2.0 — Payout Control Plane API
+  version: 0.1.0
+  description: |
+    A control plane that sits beside Nium's Transfer Money / Wallets / Onboarding / RFI / Verify / Fund Wallet APIs.
+    Clients (or Nium's own payout pipeline, via Kafka) submit a payout intent; the plane makes five decisions
+    (source, entity, evidence, timing, rail), prices the route, writes the ledger postings and returns an
+    immutable decision trace. Conventions follow Nium's public API style: `x-api-key`, `x-request-id` idempotency,
+    `clientHashId` scoping, numeric(19,4) amounts, ISO-8601 UTC timestamps.
+servers:
+  - url: https://api.spend.nium.com/api/mm2/v1
+    description: production (illustrative)
+  - url: https://gateway.nium.com/api/mm2/v1
+    description: sandbox (illustrative)
+security:
+  - apiKey: []
+paths:
+  /client/{clientHashId}/payouts:
+    post:
+      summary: Submit a payout intent and get a decision trace
+      operationId: evaluatePayout
+      parameters:
+        - $ref: '#/components/parameters/clientHashId'
+        - $ref: '#/components/parameters/requestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PayoutIntent' }
+      responses:
+        '200':
+          description: Decision made (APPROVED, DECLINED, HELD or QUEUED). A 200 with outcome=DECLINED is a decision, not an error.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Trace' }
+        '400': { description: Malformed intent (unified validation error schema) }
+        '409': { description: Duplicate x-request-id with a different body }
+  /client/{clientHashId}/payouts/{traceId}:
+    get:
+      summary: Fetch a decision trace
+      operationId: getTrace
+      parameters:
+        - $ref: '#/components/parameters/clientHashId'
+        - { name: traceId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: The trace, content: { application/json: { schema: { $ref: '#/components/schemas/Trace' } } } }
+        '404': { description: Unknown trace }
+  /client/{clientHashId}/policies:
+    get:
+      summary: List the policies in force (versioned; read-only for clients)
+      operationId: listPolicies
+      parameters: [ { $ref: '#/components/parameters/clientHashId' } ]
+      responses:
+        '200': { description: Policies, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Policy' } } } } }
+  /client/{clientHashId}/partners/appetite:
+    get:
+      summary: The partner appetite table the router evaluates (entity, verticals, jurisdictions, limits, reserves)
+      operationId: listAppetite
+      parameters: [ { $ref: '#/components/parameters/clientHashId' } ]
+      responses:
+        '200': { description: Appetite table, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Partner' } } } } }
+  /client/{clientHashId}/agents:
+    post:
+      summary: Register an agent against a verified principal (Know-Your-Agent)
+      operationId: registerAgent
+      parameters: [ { $ref: '#/components/parameters/clientHashId' }, { $ref: '#/components/parameters/requestId' } ]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/AgentRegistration' } } } }
+      responses:
+        '201': { description: Agent registered; returns agentId and mandate }
+  /client/{clientHashId}/netting/windows/{windowKey}/close:
+    post:
+      summary: Close a netting window early (e.g. threshold reached) and emit the net payout intent(s)
+      operationId: closeNettingWindow
+      parameters: [ { $ref: '#/components/parameters/clientHashId' }, { name: windowKey, in: path, required: true, schema: { type: string } } ]
+      responses:
+        '200': { description: Net payout intents emitted }
+components:
+  securitySchemes:
+    apiKey: { type: apiKey, in: header, name: x-api-key }
+  parameters:
+    clientHashId: { name: clientHashId, in: path, required: true, schema: { type: string } }
+    requestId: { name: x-request-id, in: header, required: true, schema: { type: string, format: uuid }, description: Idempotency key (cached ≥ 24h) }
+  schemas:
+    Money:
+      type: object
+      required: [value, ccy]
+      properties: { value: { type: number, description: numeric(19,4) }, ccy: { type: string, example: USDC } }
+    PayoutIntent:
+      type: object
+      required: [id, flow, amount, source, beneficiary]
+      properties:
+        id: { type: string, description: client reference (also `externalID` on Transfer Money) }
+        flow: { type: string, enum: [marketplace, stablecoin, prediction, perps, agent, gaming, creator] }
+        amount: { $ref: '#/components/schemas/Money' }
+        source:
+          type: object
+          required: [asset, account]
+          properties:
+            asset: { type: string, example: USDC }
+            account: { type: string, description: ledger account / wallet the funds leave }
+            custodian: { type: string, example: Coinbase }
+            description: { type: string }
+        beneficiary:
+          type: object
+          required: [id, country, currency]
+          properties:
+            id: { type: string }
+            country: { type: string, example: BR }
+            jurisdiction: { type: string, example: CA-ON, description: finer than country where appetite is sub-national }
+            currency: { type: string, example: BRL }
+            payoutChoice: { type: string, enum: [local, usdc, card], default: local }
+            preferWallet: { type: boolean }
+        context:
+          type: object
+          description: facts and options the policy reads (evidence facts, split, netting, agent, timingOption, narratives)
+          additionalProperties: true
+        requestedAt: { type: string, format: date-time }
+    Trace:
+      type: object
+      properties:
+        id: { type: string }
+        at: { type: string, format: date-time }
+        flow: { type: string }
+        policy: { type: object, properties: { id: { type: string }, version: { type: integer } } }
+        decisions: { type: object, properties: { source: { type: string }, entity: { type: string }, evidence: { type: string }, timing: { type: string }, rail: { type: string } } }
+        evidence: { type: array, items: { type: object, properties: { id: { type: string }, name: { type: string }, status: { type: string, enum: [pass, fail, wait] }, detail: { type: string }, onFail: { type: string }, reasonCode: { type: string } } } }
+        routerTrail: { type: array, items: { type: object, properties: { partner: { type: string }, name: { type: string }, selected: { type: boolean }, skipped: { type: string }, note: { type: string } } } }
+        cost: { type: array, items: { type: array, items: { type: string } } }
+        ledger: { type: array, items: { type: object, properties: { account: { type: string }, debit: { type: string }, credit: { type: string }, memo: { type: string } } } }
+        ledgerBalanced: { type: boolean }
+        outcome: { type: string, enum: [APPROVED, DECLINED, HELD, QUEUED] }
+        reasonCode: { type: string, description: e.g. JURISDICTION_OUT_OF_APPETITE, MARKET_REGISTRATION_REQUIRED, VENUE_LICENCE_REQUIRED, AGENT_PRINCIPAL_UNVERIFIED, MANDATE_EXCEEDED, TICKET_ABOVE_MAX, KYB_PENDING, UNECONOMIC_ROUTE, NETTING_QUEUED, RAIL_UNAVAILABLE }
+        narrative: { type: string }
+    Policy: { type: object, additionalProperties: true, description: see policies/*.json and docs/LLD.md }
+    Partner: { type: object, additionalProperties: true, description: see partners/appetite.json }
+    AgentRegistration:
+      type: object
+      required: [agentId, principalCustomerHashId, mandate]
+      properties:
+        agentId: { type: string }
+        principalCustomerHashId: { type: string, description: a KYB-verified Nium customer }
+        mandate: { type: object, properties: { dailyCapUsd: { type: number }, allowedBeneficiaries: { type: array, items: { type: string } }, expiresAt: { type: string, format: date-time } } }
+        protocol: { type: string, enum: [x402, MPP, AP2, ACP] }

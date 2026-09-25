@@ -1,0 +1,15 @@
+{
+  "name": "mm2-control-plane",
+  "version": "0.1.0",
+  "description": "Money Movement 2.0 — a payout control plane reference implementation (policy engine, appetite router, evidence gate, double-entry ledger, settlement orchestrator with netting, decision trace). Dependency-free; runs in Node >= 18 and in the browser.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Avi Reddy",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "demo": "node src/cli/demo.js",
+    "serve": "node src/api/server.js",
+    "bundle": "node scripts/bundle.js"
+  },
+  "engines": { "node": ">=18" }
+}
